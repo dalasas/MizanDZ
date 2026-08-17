@@ -26,6 +26,10 @@ jobs:
       - name: Install dependencies
         run: npm install --no-audit --no-fund
 
+      # Fix: install the Tauri CLI required by "tauri build"
+      - name: Install Tauri CLI
+        run: npm install --save-dev @tauri-apps/cli@latest
+
       - name: Build application
         run: npm run build
 
