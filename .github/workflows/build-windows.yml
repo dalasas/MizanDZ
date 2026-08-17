@@ -67,6 +67,32 @@ jobs:
 
           Write-Host "Tauri resources prepared successfully."
 
+      - name: Fix Windows ICO
+        shell: pwsh
+        run: |
+          $iconPath = "src-tauri/icons/icon.ico"
+
+          if (!(Test-Path $iconPath)) {
+            Write-Error "icon.ico was not found at $iconPath"
+            exit 1
+          }
+
+          python -m pip install --upgrade Pillow
+
+          python -c "from PIL import Image; img=Image.open(r'src-tauri/icons/icon.ico').convert('RGBA'); img.save(r'src-tauri/icons/icon_fixed.ico', format='ICO', sizes=[(256,256),(128,128),(64,64),(48,48),(32,32),(16,16)])"
+
+          if (!(Test-Path "src-tauri/icons/icon_fixed.ico")) {
+            Write-Error "Failed to create a valid Windows ICO file."
+            exit 1
+          }
+
+          Copy-Item `
+            "src-tauri/icons/icon_fixed.ico" `
+            "src-tauri/icons/icon.ico" `
+            -Force
+
+          Write-Host "Windows ICO fixed successfully."
+
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
