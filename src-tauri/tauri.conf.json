@@ -1,0 +1,84 @@
+{
+  "$schema": "https://raw.githubusercontent.com/tauri-apps/tauri/dev/crates/tauri-utils/tauri.conf.json",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "beforeBuildCommand": "npm run build",
+    "devPath": "http://localhost:3000",
+    "distDir": "../dist"
+  },
+  "package": {
+    "productName": "Mizan DZ",
+    "version": "1.0.0"
+  },
+  "tauri": {
+    "allowlist": {
+      "all": false,
+      "fs": {
+        "all": true,
+        "scope": [
+          "$APPData/*",
+          "$DESKTOP/*",
+          "$DOCUMENT/*"
+        ]
+      },
+      "dialog": {
+        "all": true
+      },
+      "process": {
+        "relaunch": true,
+        "exit": true
+      },
+      "path": {
+        "all": true
+      }
+    },
+    "bundle": {
+      "active": true,
+      "targets": [
+        "msi",
+        "nsis"
+      ],
+      "identifier": "com.mizandz.app",
+      "icon": [
+        "icons/32x32.png",
+        "icons/128x128.png",
+        "icons/128x128@2x.png",
+        "icons/icon.icns",
+        "icons/icon.ico"
+      ],
+      "resources": [
+        "resources/node.exe",
+        "resources/server.cjs",
+        "resources/sql-wasm.wasm"
+      ],
+      "shortDescription": "Mizan DZ — نظام إدارة المحلات والمبيعات التجاري (Offline First)",
+      "longDescription": "برنامج ميزان الجزائر لإدارة النقط التجارية والمبيعات والمخزون بدون إنترنت مع حفظ SQLite محلي للويندوز",
+      "publisher": "Mizan DZ Team",
+      "windows": {
+        "certificateThumbprint": null,
+        "digestAlgorithm": "sha256",
+        "timestampUrl": "",
+        "nsis": {
+          "installMode": "both"
+        }
+      }
+    },
+    "security": {
+      "csp": null
+    },
+    "windows": [
+      {
+        "fullscreen": false,
+        "resizable": true,
+        "title": "Mizan DZ — ميزان (Offline Desktop)",
+        "width": 1280,
+        "height": 800,
+        "minWidth": 1024,
+        "minHeight": 700,
+        "decorations": true,
+        "transparent": false,
+        "center": true
+      }
+    ]
+  }
+}
