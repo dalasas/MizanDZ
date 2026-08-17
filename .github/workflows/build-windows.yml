@@ -67,27 +67,26 @@ jobs:
 
           Write-Host "Tauri resources prepared successfully."
 
-      - name: Generate valid Windows icon
+      - name: Generate Windows icon
         shell: pwsh
         run: |
           python -m pip install --upgrade Pillow
 
-          $png = "src-tauri/icons/128x128@2x.png"
           $ico = "src-tauri/icons/icon.ico"
 
-          if (!(Test-Path $png)) {
-            Write-Error "Source PNG icon was not found: $png"
+          python -c "from PIL import Image, ImageDraw; img=Image.new('RGBA',(256,256),(30,30,30,255)); d=ImageDraw.Draw(img); d.rounded_rectangle((20,20,236,236),radius=45,fill=(30,120,80,255)); d.text((72,82),'M',fill=(255,255,255,255),stroke_width=2); img.save(r'src-tauri/icons/icon.ico',format='ICO',sizes=[(256,256),(128,128),(64,64),(48,48),(32,32),(16,16)])"
+
+          if ($LASTEXITCODE -ne 0) {
+            Write-Error "Failed to generate Windows icon."
             exit 1
           }
-
-          python -c "from PIL import Image; img=Image.open(r'src-tauri/icons/128x128@2x.png').convert('RGBA'); img.save(r'src-tauri/icons/icon.ico', format='ICO', sizes=[(256,256),(128,128),(64,64),(48,48),(32,32),(16,16)])"
 
           if (!(Test-Path $ico)) {
-            Write-Error "Failed to generate icon.ico"
+            Write-Error "icon.ico was not generated."
             exit 1
           }
 
-          Write-Host "Valid Windows icon generated successfully."
+          Write-Host "Windows icon generated successfully."
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
