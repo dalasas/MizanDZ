@@ -1,0 +1,6 @@
+{
+  "name": "Mizan DZ — ميزان",
+  "description": "برنامج إدارة المحلات التجارية والتجارية الذكي في الجزائر — Mizan DZ Shop Management System",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
