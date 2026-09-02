@@ -10,8 +10,35 @@ const copy = (from, to) => {
   fs.copyFileSync(from, to);
 };
 
-copy(path.join(root, "dist", "server.cjs"), path.join(resourceDir, "server.cjs"));
-copy(path.join(root, "node_modules", "sql.js", "dist", "sql-wasm.wasm"), path.join(resourceDir, "sql-wasm.wasm"));
+// copy server.cjs
+const serverSrc = path.join(root, 'dist', 'server.cjs');
+const serverDest = path.join(resourceDir, 'server.cjs');
+copy(serverSrc, serverDest);
+
+// copy sql-wasm.wasm
+const sqlWasmSrc = path.join(root, 'node_modules', 'sql.js', 'dist', 'sql-wasm.wasm');
+const sqlWasmDest = path.join(resourceDir, 'sql-wasm.wasm');
+copy(sqlWasmSrc, sqlWasmDest);
+
+// copy dist directory (frontend assets) into resources/dist
+const distSrc = path.join(root, 'dist');
+const distDest = path.join(resourceDir, 'dist');
+
+function copyDir(src, dest) {
+  if (!fs.existsSync(src)) throw new Error(`Missing dist directory: ${src}`);
+  fs.mkdirSync(dest, { recursive: true });
+  for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
+    const srcPath = path.join(src, entry.name);
+    const destPath = path.join(dest, entry.name);
+    if (entry.isDirectory()) {
+      copyDir(srcPath, destPath);
+    } else if (entry.isFile()) {
+      fs.copyFileSync(srcPath, destPath);
+    }
+  }
+}
+
+copyDir(distSrc, distDest);
 
 // node.exe is downloaded by the Windows CI workflow. Local Windows builds can place it here manually.
 const nodeExe = path.join(resourceDir, "node.exe");
