@@ -14,9 +14,9 @@ function hashPassword(password: string, salt?: string): string {
 
 function verifyPassword(password: string, storedHash: string): boolean {
   if (!password || !storedHash) return false;
-  if (storedHash.startsWith('scrypt:')) {
+   (storedHash.startsWith('scrypt:')) {
     const parts = storedHash.split(':');
-    if (parts.length !== 3) return false;
+     (parts.length !== 3) return false;
     const [, salt, originalHex] = parts;
     const computedHex = crypto.scryptSync(password, salt, 64).toString('hex');
     try {
@@ -25,7 +25,7 @@ function verifyPassword(password: string, storedHash: string): boolean {
       return false;
     }
   }
-  // Legacy SHA-256 or plaintext migration verification
+  // Legacy SHA-256 or plaintext migration verication
   const sha256Hash = crypto.createHash('sha256').update(password).digest('hex');
   return storedHash === sha256Hash || storedHash === password;
 }
@@ -664,22 +664,26 @@ async function startServer() {
   // Serve React Frontend in Production
   // In development, Vite dev server handles this (devPath: http://localhost:3000)
   // In production, serve dist files
-  if (process.env.NODE_ENV === 'production') {
-    const distPath = path.join(process.cwd(), '..', 'dist');
-    
-    // Serve static assets (JS, CSS, images, etc.)
-    app.use(express.static(distPath));
-    
-    // SPA fallback: serve index.html for all non-API routes
-    app.get(/^\/(?!api\/).*/, (req, res) => {
-      const indexPath = path.join(distPath, 'index.html');
-      if (fs.existsSync(indexPath)) {
-        res.sendFile(indexPath);
-      } else {
-        res.status(404).json({ error: 'Frontend index.html not found. Build may be incomplete.' });
-      }
-    });
-  }
+if (process.env.NODE_ENV === 'production') {
+  // In the packaged Tauri application, the complete frontend
+  // is copied into resources/dist.
+  const resourceRoot = process.env.MIZAN_RESOURCE_DIR || process.cwd();
+  const distPath = path.join(resourceRoot, 'dist');
+
+  app.use(express.static(distPath));
+
+  app.get(/^\/(?!api\/).*/, (req, res) => {
+    const indexPath = path.join(distPath, 'index.html');
+
+    if (fs.existsSync(indexPath)) {
+      res.sendFile(indexPath);
+    } else {
+      res.status(404).json({
+        error: 'Frontend index.html not found. Build may be incomplete.'
+      });
+    }
+  });
+}
 
   const server = app.listen(PORT, HOST, () => {
     console.log(`[Mizan DZ] Server running on http://${HOST}:${PORT}`);
