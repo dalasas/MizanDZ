@@ -49,7 +49,8 @@
       "resources": [
         "resources/node.exe",
         "resources/server.cjs",
-        "resources/sql-wasm.wasm"
+        "resources/sql-wasm.wasm",
+        "resources/dist"
       ],
       "shortDescription": "Mizan DZ — نظام إدارة المحلات والمبيعات التجاري (Offline First)",
       "longDescription": "برنامج ميزان الجزائر لإدارة النقط التجارية والمبيعات والمخزون بدون إنترنت مع حفظ SQLite محلي للويندوز",
