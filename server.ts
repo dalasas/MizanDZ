@@ -14,22 +14,33 @@ function hashPassword(password: string, salt?: string): string {
 
 function verifyPassword(password: string, storedHash: string): boolean {
   if (!password || !storedHash) return false;
-   (storedHash.startsWith('scrypt:')) {
+
+  if (storedHash.startsWith('scrypt:')) {
     const parts = storedHash.split(':');
-     (parts.length !== 3) return false;
+
+    if (parts.length !== 3) return false;
+
     const [, salt, originalHex] = parts;
     const computedHex = crypto.scryptSync(password, salt, 64).toString('hex');
+
     try {
-      return crypto.timingSafeEqual(Buffer.from(computedHex), Buffer.from(originalHex));
+      return crypto.timingSafeEqual(
+        Buffer.from(computedHex),
+        Buffer.from(originalHex)
+      );
     } catch {
       return false;
     }
   }
-  // Legacy SHA-256 or plaintext migration verication
-  const sha256Hash = crypto.createHash('sha256').update(password).digest('hex');
+
+  // Legacy SHA-256 or plaintext migration verification
+  const sha256Hash = crypto
+    .createHash('sha256')
+    .update(password)
+    .digest('hex');
+
   return storedHash === sha256Hash || storedHash === password;
 }
-
 // Role Permissions Map
 const ROLE_PERMISSIONS: Record<string, string[]> = {
   Admin: ['*'],
